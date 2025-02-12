@@ -15,15 +15,8 @@ DEFAULT_DELTA_T = 1  # Time difference in seconds (assumed to be 1 second interv
 cam = Camera()
 cam.start_preview()
 
-# Capture sequence of 10 images at 1-second intervals
-num_images = 10
-image_paths = []
-for i in range(num_images):
-    filename = f"image_{i + 1}.jpg"
-    cam.capture(filename)
-    image_paths.append(filename)
-    print(f"Captured {filename}")
-    time.sleep(1)  # Sleep for 1 second before capturing the next image
+# Capture images
+image_filenames = cam.capture_sequence(filename="sequence", num_images=10, interval=1)
 
 # Function to get image capture time from EXIF data
 def get_image_capture_time(image_path):
@@ -74,6 +67,9 @@ def compute_speed(image1, image2, delta_t):
 
     return speed_kilometers_per_second
 
+# List to store image paths
+image_paths = [f"{filename}.jpg" for filename in image_filenames]
+
 # Main computation for speed across image pairs
 speeds = []
 for i in range(0, len(image_paths) - 1, 2):  # Process pairs of images
@@ -106,4 +102,3 @@ with open(output_filename, 'w') as f:
 
 print(f"Mean speed of the ISS: {mean_speed:.2f} km/s")
 print(f"Results saved in {output_filename}")
-
