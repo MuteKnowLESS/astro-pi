@@ -16,16 +16,8 @@ cam = Camera()
 cam.start_preview()
 
 # Attempt to capture 10 images
-try:
-    image_filenames = cam.capture_sequence(filename="sequence", num_images=10, interval=1)
-    if image_filenames is None:
-        print("Error: No images captured!")
-        exit()  # Exit if images were not captured successfully
-    else:
-        print(f"Captured images: {image_filenames}")
-except Exception as e:
-    print(f"Error during image capture: {e}")
-    exit()  # Exit if there's any issue with capturing images
+cam.capture_sequence(filename="sequence", num_images=10, interval=1)
+image_filenames = [f"sequence-{i:02d}" for i in range(1,11)]
 
 # Function to get image capture time from EXIF data
 def get_image_capture_time(image_path):
