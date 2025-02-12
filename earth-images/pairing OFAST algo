@@ -15,18 +15,30 @@ DEFAULT_DELTA_T = 1  # Time difference in seconds (assumed to be 1 second interv
 cam = Camera()
 cam.start_preview()
 
-# Capture images
-image_filenames = cam.capture_sequence(filename="sequence", num_images=10, interval=1)
+# Attempt to capture 10 images
+try:
+    image_filenames = cam.capture_sequence(filename="sequence", num_images=10, interval=1)
+    if image_filenames is None:
+        print("Error: No images captured!")
+        exit()  # Exit if images were not captured successfully
+    else:
+        print(f"Captured images: {image_filenames}")
+except Exception as e:
+    print(f"Error during image capture: {e}")
+    exit()  # Exit if there's any issue with capturing images
 
 # Function to get image capture time from EXIF data
 def get_image_capture_time(image_path):
-    image = Image.open(image_path)
-    exif_data = image._getexif()
-    if exif_data:
-        for tag, value in exif_data.items():
-            tag_name = TAGS.get(tag, tag)
-            if tag_name == 'DateTimeOriginal':
-                return value
+    try:
+        image = Image.open(image_path)
+        exif_data = image._getexif()
+        if exif_data:
+            for tag, value in exif_data.items():
+                tag_name = TAGS.get(tag, tag)
+                if tag_name == 'DateTimeOriginal':
+                    return value
+    except Exception as e:
+        print(f"Error reading EXIF data from {image_path}: {e}")
     return None
 
 # Function to calculate motion and speed
